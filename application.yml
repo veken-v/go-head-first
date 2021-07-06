@@ -1,0 +1,3 @@
+server:
+  port: 1217
+  mode: debug    # release, test

@@ -1,16 +1,29 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+	"go-head-first/boot"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+)
 
 func main() {
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
+	go boot.ServerStart()
 
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
-
+	//构建一个停机信号
+	signalChanel := make(chan os.Signal, 1)
+	signal.Notify(signalChanel, syscall.SIGINT, syscall.SIGTERM)
+	done := make(chan bool, 1)
+	go func() {
+		sin := <-signalChanel
+		fmt.Println("收到退出信息", sin)
+		done <- true
+	}()
+	<-done
+	//做一些清理工作
+	time.Sleep(2 * time.Second)
+	fmt.Println("系统已经关闭！！！")
 }
