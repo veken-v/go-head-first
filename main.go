@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"go-head-first/boot"
+	_ "go-head-first/loging"
 	"os"
 	"os/signal"
 	"syscall"

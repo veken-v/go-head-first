@@ -3,7 +3,7 @@ package boot
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go-head-first/controller"
+	"go-head-first/router"
 	"net/http"
 	"os"
 	"strconv"
@@ -31,7 +31,7 @@ func ServerStart() {
 	//静态资源
 	ginInstance.StaticFS("/static", http.Dir("/static"))
 	//添加路由
-	controller.RouteMount(ginInstance)
+	router.RouteMount(ginInstance)
 	//https 证书配置
 	//if Storage.ServerHTTPS() {
 	//	go func() {

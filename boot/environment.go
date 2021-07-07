@@ -21,7 +21,7 @@ type Environment struct {
 var env Environment
 
 //初始化,分别从 ./application.yml ./config/application.yml 读取配置文件
-func init() {
+func loadEnvironment() {
 
 	content, err := ioutil.ReadFile("./application.yml")
 
