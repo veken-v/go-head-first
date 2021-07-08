@@ -2,17 +2,26 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"go-head-first/boot"
-	_ "go-head-first/loging"
+	_ "go-head-first/logging"
+	"go-head-first/router"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 )
 
-func main() {
+type ServerInitializer struct {
+	boot.ServerLifeCycleTemplate
+}
 
-	go boot.ServerStart()
+func (l ServerInitializer) Created(ginInstance *gin.Engine) {
+	router.RouteMount(ginInstance)
+}
+
+func main() {
+	go boot.ServerStart(ServerInitializer{})
 
 	//构建一个停机信号
 	signalChanel := make(chan os.Signal, 1)

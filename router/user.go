@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	. "go-head-first/loging"
+	. "go-head-first/logging"
 )
 
 func queryUser(c *gin.Context) {

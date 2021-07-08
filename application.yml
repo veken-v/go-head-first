@@ -3,11 +3,10 @@ server:
   mode: release    # release, test
 
 logging:
-  level:
-    root: warn
-    com.gridvo.eagle: ${LOG_LEVEL:warn}
-  file:
-    path: logs
-  logback:
-    rollingpolicy:
-      max-history: ${LOG_MAX_HISTORY:30}
+  level: warn
+  file-path: ./logs/app.log
+  file-max-size: 10 #10M
+  max-history: 30
+  compress: false
+#  local-time: false
+#  max-backups: 10

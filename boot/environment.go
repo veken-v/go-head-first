@@ -10,12 +10,28 @@ import (
 
 //应用环境变量
 type Environment struct {
+	//日志配置
+	Logging LoggingConfigurer
 	//服务配置
-	Server struct {
-		//端口号
-		Port int    `yaml:"port"`
-		Mode string `yaml:"mode"`
-	}
+	Server Server
+}
+
+//服务配置
+type Server struct {
+	//端口号
+	Port int    `yaml:"port"`
+	Mode string `yaml:"mode"`
+}
+
+//日志配置
+type LoggingConfigurer struct {
+	Level       string `yaml:"level"`         //warn,info,error,debug
+	FilePath    string `yaml:"file-path"`     // ./logs/app.log
+	FileMaxSize int    `yaml:"file-max-size"` // 10 #10M
+	MaxHistory  int    `yaml:"max-history"`   //30
+	Compress    bool   `yaml:"compress"`
+	LocalTime   bool   `yaml:"local-time"`
+	MaxBackups  int    `yaml:"max-backups"` //10
 }
 
 var env Environment
@@ -39,12 +55,10 @@ func loadEnvironment() {
 		log.Fatalf("解析application.yml出错: %v", err)
 	}
 
-	fmt.Println("---系统配置信息---")
 	fmt.Println(string(jsonInfo))
-	fmt.Println("---------------")
 }
 
 //获取当前环境
-func getEnvironment() Environment {
+func Env() Environment {
 	return env //返回的是一个值对象，不能返回引用(指针)。防止对象被修改
 }

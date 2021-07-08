@@ -3,26 +3,29 @@ package boot
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"go-head-first/router"
 	"net/http"
 	"os"
 	"strconv"
 )
 
-func ServerStart() {
+func ServerStart(lifeCycle ServerLifeCycle) {
 	fmt.Println("服务启动了！！！")
-	environment := getEnvironment()
+	if lifeCycle == nil {
+		lifeCycle = ServerLifeCycleTemplate{}
+	}
 
-	gin.SetMode(environment.Server.Mode)
+	env = lifeCycle.BeforeStart(env)
+
+	gin.SetMode(env.Server.Mode)
 
 	var ginInstance *gin.Engine
 
-	if environment.Server.Mode == gin.ReleaseMode {
+	if env.Server.Mode == gin.ReleaseMode {
 		ginInstance = gin.New()
 	} else {
 		ginInstance = gin.Default()
 	}
-
+	lifeCycle.Created(ginInstance)
 	//跨域处理
 	//ginInstance.Use(CrossOrigin())
 	//privat := public.Group("/", gin.BasicAuth(gin.Accounts{Storage.ServerHTTPLogin(): Storage.ServerHTTPPassword()}))
@@ -30,8 +33,6 @@ func ServerStart() {
 	//ginInstance.LoadHTMLGlob("/templates/*")
 	//静态资源
 	ginInstance.StaticFS("/static", http.Dir("/static"))
-	//添加路由
-	router.RouteMount(ginInstance)
 	//https 证书配置
 	//if Storage.ServerHTTPS() {
 	//	go func() {
@@ -46,11 +47,13 @@ func ServerStart() {
 	//		}
 	//	}()
 	//}
-	port := strconv.Itoa(environment.Server.Port)
+	port := strconv.Itoa(env.Server.Port)
 	err := ginInstance.Run(":" + port) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 	if err != nil {
 		os.Exit(1)
 	}
+
+	lifeCycle.Running(ginInstance)
 }
 
 //func CrossOrigin() gin.HandlerFunc {

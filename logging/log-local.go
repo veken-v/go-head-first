@@ -1,43 +1,5 @@
-package loging
-
-import (
-	"go.uber.org/zap"
-	"log"
-)
-
-var ZapLog *zap.Logger
-var ZapSugarLog *zap.SugaredLogger
-
-func init() {
-	initZap()
-}
-
-//初始化zap
-func initZap() {
-	ZapLog, _ = zap.NewProduction()
-	defer func(ZapLogger *zap.Logger) {
-		err := ZapLogger.Sync()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(ZapLog) // flushes buffer, if any
-	ZapSugarLog = ZapLog.Sugar()
-
-	defer func(ZapSugarLog *zap.SugaredLogger) {
-		err := ZapSugarLog.Sync()
-		if err != nil {
-			log.Fatal(err)
-		}
-	}(ZapSugarLog)
-
-	//sugar.Infow("failed to fetch URL",
-	//	// Structured context as loosely typed key-value pairs.
-	//	"url", url,
-	//	"attempt", 3,
-	//	"backoff", time.Second,
-	//)
-	//sugar.Infof("Failed to fetch URL: %s", url)
-}
+//本地日志处理
+package logging
 
 //var (
 //	Trace   *log.Logger // 记录所有日志
